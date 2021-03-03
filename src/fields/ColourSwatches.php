@@ -83,18 +83,29 @@ class ColourSwatches extends Field implements PreviewableFieldInterface
              */
             public function normalizeValue($value, ElementInterface $element = null)
             {
-
-                if ($value instanceof ColourSwatchesModel)
-                {
+        
+                if ($value === null) {
+                    return;
+                }
+        
+                if ($value instanceof ColourSwatchesModel) {
                     return $value;
                 }
+        
                 // quick array transform so that we can ensure and `required fields` fire an error
-                $valueData = (array)json_decode($value);
+        
+                $valueData = $value;
+                if (is_string($value)) {
+                    $valueData = (array)json_decode($value);
+                } elseif (is_array($value)) {
+                    $value = json_encode($value);
+                }
+        
                 // if we have actual data return model
-                if (count($valueData) > 0)
-                {
+                if (count($valueData) > 0) {
                     return new ColourSwatchesModel($value);
                 }
+        
             }
 
             /**
